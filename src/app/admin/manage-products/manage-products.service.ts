@@ -31,10 +31,19 @@ export class ManageProductsService extends ApiService {
 
   private getPreSignedUrl(fileName: string): Observable<string> {
     const url = this.getUrl('import', 'import');
+    const authToken = localStorage.getItem('authToken');
+    const base64authToken = btoa(authToken || '');
+    const authorization = !!base64authToken ? `Basic ${base64authToken}` : '';
 
     return this.http.get<string>(url, {
       params: {
         name: fileName,
+      },
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Authorization: authorization,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'Content-Type': 'text/csv',
       },
     });
   }
